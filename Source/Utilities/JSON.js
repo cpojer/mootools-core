@@ -18,15 +18,6 @@ provides: JSON
 
 if (typeof JSON == 'undefined') this.JSON = {};
 
-//<1.2compat>
-
-JSON = new Hash({
-	stringify: JSON.stringify,
-	parse: JSON.parse
-});
-
-//</1.2compat>
-
 (function(){
 
 var special = {'\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\'};

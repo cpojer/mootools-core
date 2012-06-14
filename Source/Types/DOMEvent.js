@@ -35,7 +35,7 @@ var DOMEvent = this.DOMEvent = new Type('DOMEvent', function(event, win){
 
 	if (type.indexOf('key') == 0){
 		var code = this.code = (event.which || event.keyCode);
-		this.key = _keys[code]/*<1.3compat>*/ || Object.keyOf(Event.Keys, code)/*</1.3compat>*/;
+		this.key = _keys[code];
 		if (type == 'keydown' || type == 'keyup'){
 			if (code > 111 && code < 124) this.key = 'f' + (code - 111);
 			else if (code > 95 && code < 106) this.key = code - 96;
@@ -112,14 +112,3 @@ DOMEvent.defineKeys({
 });
 
 })();
-
-/*<1.3compat>*/
-var Event = DOMEvent;
-Event.Keys = {};
-/*</1.3compat>*/
-
-/*<1.2compat>*/
-
-Event.Keys = new Hash(Event.Keys);
-
-/*</1.2compat>*/

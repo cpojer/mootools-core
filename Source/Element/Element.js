@@ -83,12 +83,6 @@ if (!Browser.Element){
 
 Element.Constructors = {};
 
-//<1.2compat>
-
-Element.Constructors = new Hash;
-
-//</1.2compat>
-
 var IFrame = new Type('IFrame', function(){
 	var params = Array.link(arguments, {
 		properties: Type.isObject,
@@ -177,12 +171,6 @@ new Type('Elements', Elements).implement({
 	}.protect()
 
 });
-
-//<1.2compat>
-
-Elements.alias('extend', 'append');
-
-//</1.2compat>
 
 (function(){
 
@@ -332,43 +320,6 @@ var contains = {contains: function(element){
 if (!document.contains) Document.implement(contains);
 if (!document.createElement('div').contains) Element.implement(contains);
 
-//<1.2compat>
-
-Element.implement('hasChild', function(element){
-	return this !== element && this.contains(element);
-});
-
-(function(search, find, match){
-
-	this.Selectors = {};
-	var pseudos = this.Selectors.Pseudo = new Hash();
-
-	var addSlickPseudos = function(){
-		for (var name in pseudos) if (pseudos.hasOwnProperty(name)){
-			Slick.definePseudo(name, pseudos[name]);
-			delete pseudos[name];
-		}
-	};
-
-	Slick.search = function(context, expression, append){
-		addSlickPseudos();
-		return search.call(this, context, expression, append);
-	};
-
-	Slick.find = function(context, expression){
-		addSlickPseudos();
-		return find.call(this, context, expression);
-	};
-
-	Slick.match = function(node, selector){
-		addSlickPseudos();
-		return match.call(this, node, selector);
-	};
-
-})(Slick.search, Slick.find, Slick.match);
-
-//</1.2compat>
-
 // tree walking
 
 var injectCombinator = function(expression, combinator){
@@ -433,24 +384,6 @@ Element.implement({
 
 });
 
-//<1.2compat>
-
-if (window.$$ == null) Window.implement('$$', function(selector){
-	var elements = new Elements;
-	if (arguments.length == 1 && typeof selector == 'string') return Slick.search(this.document, selector, elements);
-	var args = Array.flatten(arguments);
-	for (var i = 0, l = args.length; i < l; i++){
-		var item = args[i];
-		switch (typeOf(item)){
-			case 'element': elements.push(item); break;
-			case 'string': Slick.search(this.document, item, elements);
-		}
-	}
-	return elements;
-});
-
-//</1.2compat>
-
 if (window.$$ == null) Window.implement('$$', function(selector){
 	if (arguments.length == 1){
 		if (typeof selector == 'string') return Slick.search(this.document, selector, new Elements);
@@ -484,30 +417,6 @@ var inserters = {
 };
 
 inserters.inside = inserters.bottom;
-
-//<1.2compat>
-
-Object.each(inserters, function(inserter, where){
-
-	where = where.capitalize();
-
-	var methods = {};
-
-	methods['inject' + where] = function(el){
-		inserter(this, document.id(el, true));
-		return this;
-	};
-
-	methods['grab' + where] = function(el){
-		inserter(document.id(el, true), this);
-		return this;
-	};
-
-	Element.implement(methods);
-
-});
-
-//</1.2compat>
 
 // getProperty / setProperty
 
@@ -944,12 +853,6 @@ if (window.attachEvent && !window.addEventListener){
 /*</ltIE9>*/
 
 Element.Properties = {};
-
-//<1.2compat>
-
-Element.Properties = new Hash;
-
-//</1.2compat>
 
 Element.Properties.style = {
 

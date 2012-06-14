@@ -186,42 +186,6 @@ Element.Styles = {
 	zIndex: '@', 'zoom': '@', fontWeight: '@', textIndent: '@px', opacity: '@'
 };
 
-//<1.3compat>
-
-Element.implement({
-
-	setOpacity: function(value){
-		setOpacity(this, value);
-		return this;
-	},
-
-	getOpacity: function(){
-		return getOpacity(this);
-	}
-
-});
-
-Element.Properties.opacity = {
-
-	set: function(opacity){
-		setOpacity(this, opacity);
-		setVisibility(this, opacity);
-	},
-
-	get: function(){
-		return getOpacity(this);
-	}
-
-};
-
-//</1.3compat>
-
-//<1.2compat>
-
-Element.Styles = new Hash(Element.Styles);
-
-//</1.2compat>
-
 Element.ShortStyles = {margin: {}, padding: {}, border: {}, borderWidth: {}, borderStyle: {}, borderColor: {}};
 
 ['Top', 'Right', 'Bottom', 'Left'].each(function(direction){
