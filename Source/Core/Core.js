@@ -23,13 +23,13 @@ provides: [Core, MooTools, Type, typeOf, instanceOf]
 (function(){
 
 this.MooTools = {
-	version: '1.5.0dev',
+	version: '1.5.0-custom',
 	build: '%build%'
 };
 
 // typeOf, instanceOf
 
-var typeOf = this.typeOf = function(item){
+var typeOf = exports.typeOf = function(item){
 	if (item == null) return 'null';
 	if (item.$family != null) return item.$family();
 
@@ -44,7 +44,7 @@ var typeOf = this.typeOf = function(item){
 	return typeof item;
 };
 
-var instanceOf = this.instanceOf = function(item, object){
+var instanceOf = exports.instanceOf = function(item, object){
 	if (item == null) return false;
 	var constructor = item.$constructor || item.constructor;
 	while (constructor){
@@ -149,7 +149,7 @@ Function.implement({
 
 // Type
 
-var Type = this.Type = function(name, object){
+var Type = exports.Type = function(name, object){
 	if (name){
 		var lower = name.toLowerCase();
 		var typeCheck = function(item){
@@ -395,4 +395,4 @@ String.extend('uniqueID', function(){
 	return (UID++).toString(36);
 });
 
-})();
+}).call(window);

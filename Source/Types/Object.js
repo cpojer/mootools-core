@@ -16,6 +16,7 @@ provides: [Object, Hash]
 
 (function(){
 
+var typeOf = exports.typeOf;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 Object.extend({

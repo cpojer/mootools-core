@@ -16,15 +16,17 @@ provides: [Browser, Window, Document]
 
 (function(){
 
-var document = this.document;
-var window = document.window = this;
+var typeOf = exports.typeOf;
+var Type = exports.Type;
+
+var document = window.document;
 
 var ua = navigator.userAgent.toLowerCase(),
 	platform = navigator.platform.toLowerCase(),
 	UA = ua.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/) || [null, 'unknown', 0],
 	mode = UA[1] == 'ie' && document.documentMode;
 
-var Browser = this.Browser = {
+var Browser = exports.Browser = {
 
 	extend: Function.prototype.extend,
 
@@ -74,25 +76,25 @@ String.implement('stripScripts', function(exec){
 // Window, Document
 
 Browser.extend({
-	Document: this.Document,
-	Window: this.Window,
-	Element: this.Element,
-	Event: this.Event
+	Document: window.Document,
+	Window: window.Window,
+	Element: window.Element,
+	Event: window.Event
 });
 
-this.Window = this.$constructor = new Type('Window', function(){});
+window.Window = window.$constructor = new Type('Window', function(){});
 
-this.$family = Function.from('window').hide();
+window.$family = Function.from('window').hide();
 
-Window.mirror(function(name, method){
+window.Window.mirror(function(name, method){
 	window[name] = method;
 });
 
-this.Document = document.$constructor = new Type('Document', function(){});
+window.Document = document.$constructor = new Type('Document', function(){});
 
 document.$family = Function.from('document').hide();
 
-Document.mirror(function(name, method){
+window.Document.mirror(function(name, method){
 	document[name] = method;
 });
 
@@ -100,12 +102,12 @@ document.html = document.documentElement;
 if (!document.head) document.head = document.getElementsByTagName('head')[0];
 
 /*<ltIE9>*/
-if (this.attachEvent && !this.addEventListener){
+if (window.attachEvent && !window.addEventListener){
 	var unloadEvent = function(){
-		this.detachEvent('onunload', unloadEvent);
+		window.detachEvent('onunload', unloadEvent);
 		document.head = document.html = document.window = null;
 	};
-	this.attachEvent('onunload', unloadEvent);
+	window.attachEvent('onunload', unloadEvent);
 }
 
 // IE fails on collections and <select>.options (refers to <select>)

@@ -16,6 +16,10 @@ provides: Element.Style
 
 (function(){
 
+var typeOf = exports.typeOf;
+var Browser = exports.Browser;
+var Element = exports.Element;
+
 var html = document.html;
 
 //<ltIE9>

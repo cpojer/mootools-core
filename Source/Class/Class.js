@@ -16,7 +16,11 @@ provides: Class
 
 (function(){
 
-var Class = this.Class = new Type('Class', function(params){
+var typeOf = exports.typeOf;
+var instanceOf = exports.instanceOf;
+var Type = exports.Type;
+
+var Class = exports.Class = new Type('Class', function(params){
 	if (instanceOf(params, Function)) params = {initialize: params};
 
 	var newClass = function(){

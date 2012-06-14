@@ -14,7 +14,16 @@ provides: [Element, Elements, $, $$]
 ...
 */
 
-var Element = this.Element = function(tag, props){
+(function() {
+
+var typeOf = exports.typeOf;
+var Type = exports.Type;
+var Browser = exports.Browser;
+var Slick = exports.Slick;
+var Window = window.Window;
+var Document = window.Document;
+
+var Element = exports.Element = window.Element = function(tag, props){
 	var konstructor = Element.Constructors[tag];
 	if (konstructor) return konstructor(props);
 	if (typeof tag != 'string') return document.id(tag).set(props);
@@ -83,7 +92,7 @@ if (!Browser.Element){
 
 Element.Constructors = {};
 
-var Elements = this.Elements = function(nodes){
+var Elements = exports.Elements = function(nodes){
 	if (nodes && nodes.length){
 		var uniques = {}, node;
 		for (var i = 0; node = nodes[i++];){
@@ -975,5 +984,7 @@ if (document.createElement('div').getAttributeNode('id')) Element.Properties.id 
 	}
 };
 /*</IE>*/
+
+})();
 
 })();

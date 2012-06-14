@@ -14,6 +14,11 @@ provides: Array
 ...
 */
 
+(function() {
+
+var typeOf = exports.typeOf;
+var instanceOf = exports.instanceOf;
+
 Array.implement({
 
 	/*<!ES5>*/
@@ -167,3 +172,5 @@ Array.implement({
 	}
 
 });
+
+})();

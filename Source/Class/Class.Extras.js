@@ -16,7 +16,10 @@ provides: [Class.Extras, Chain, Events, Options]
 
 (function(){
 
-this.Chain = new Class({
+var typeOf = exports.typeOf;
+var Class = exports.Class;
+
+exports.Chain = new Class({
 
 	$chain: [],
 
@@ -42,7 +45,7 @@ var removeOn = function(string){
 	});
 };
 
-this.Events = new Class({
+exports.Events = new Class({
 
 	$events: {},
 
@@ -100,7 +103,7 @@ this.Events = new Class({
 
 });
 
-this.Options = new Class({
+exports.Options = new Class({
 
 	setOptions: function(){
 		var options = this.options = Object.merge.apply(null, [{}, this.options].append(arguments));

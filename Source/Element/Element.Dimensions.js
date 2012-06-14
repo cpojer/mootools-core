@@ -20,6 +20,11 @@ provides: [Element.Dimensions]
 
 (function(){
 
+var Browser = exports.Browser;
+var Element = exports.Element;
+var Window = window.Window;
+var Document = window.Document;
+
 var element = document.createElement('div'),
 	child = document.createElement('div');
 element.style.height = '0';

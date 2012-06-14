@@ -16,6 +16,13 @@ provides: Element.Event
 
 (function(){
 
+var typeOf = exports.typeOf;
+var Browser = exports.Browser;
+var DOMEvent = exports.DOMEvent;
+var Element = exports.Element;
+var Window = window.Window;
+var Document = window.Document;
+
 Element.Properties.events = {set: function(events){
 	this.addEvents(events);
 }};

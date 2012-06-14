@@ -16,9 +16,11 @@ provides: Event
 
 (function() {
 
+var Type = exports.Type;
+
 var _keys = {};
 
-var DOMEvent = this.DOMEvent = new Type('DOMEvent', function(event, win){
+var DOMEvent = exports.DOMEvent = new Type('DOMEvent', function(event, win){
 	if (!win) win = window;
 	event = event || win.event;
 	if (event.$extended) return event;
