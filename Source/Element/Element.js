@@ -9,7 +9,7 @@ license: MIT-style license.
 
 requires: [Window, Document, Array, String, Function, Object, Number, Slick.Parser, Slick.Finder]
 
-provides: [Element, Elements, $, $$, Iframe, Selectors]
+provides: [Element, Elements, $, $$]
 
 ...
 */
@@ -82,30 +82,6 @@ if (!Browser.Element){
 }
 
 Element.Constructors = {};
-
-var IFrame = new Type('IFrame', function(){
-	var params = Array.link(arguments, {
-		properties: Type.isObject,
-		iframe: function(obj){
-			return (obj != null);
-		}
-	});
-
-	var props = params.properties || {}, iframe;
-	if (params.iframe) iframe = document.id(params.iframe);
-	var onload = props.onload || function(){};
-	delete props.onload;
-	props.id = props.name = [props.id, props.name, iframe ? (iframe.id || iframe.name) : 'IFrame_' + String.uniqueID()].pick();
-	iframe = new Element(iframe || 'iframe', props);
-
-	var onLoad = function(){
-		onload.call(iframe.contentWindow);
-	};
-
-	if (window.frames[props.id]) onLoad();
-	else iframe.addListener('load', onLoad);
-	return iframe;
-});
 
 var Elements = this.Elements = function(nodes){
 	if (nodes && nodes.length){

@@ -36,68 +36,13 @@ var Browser = this.Browser = {
 		name: ua.match(/ip(?:ad|od|hone)/) ? 'ios' : (ua.match(/(?:webos|android)/) || platform.match(/mac|win|linux/) || ['other'])[0]
 	},
 
-	Features: {
-		xpath: !!(document.evaluate),
-		air: !!(window.runtime),
-		query: !!(document.querySelector),
-		json: !!(window.JSON)
-	},
-
-	Plugins: {}
+	Features: {}
 
 };
 
 Browser[Browser.name] = true;
 Browser[Browser.name + parseInt(Browser.version, 10)] = true;
 Browser.Platform[Browser.Platform.name] = true;
-
-// Request
-
-Browser.Request = (function(){
-
-	var XMLHTTP = function(){
-		return new XMLHttpRequest();
-	};
-
-	var MSXML2 = function(){
-		return new ActiveXObject('MSXML2.XMLHTTP');
-	};
-
-	var MSXML = function(){
-		return new ActiveXObject('Microsoft.XMLHTTP');
-	};
-
-	return Function.attempt(function(){
-		XMLHTTP();
-		return XMLHTTP;
-	}, function(){
-		MSXML2();
-		return MSXML2;
-	}, function(){
-		MSXML();
-		return MSXML;
-	});
-
-})();
-
-Browser.Features.xhr = !!(Browser.Request);
-
-//<1.4compat>
-
-// Flash detection
-
-var version = (Function.attempt(function(){
-	return navigator.plugins['Shockwave Flash'].description;
-}, function(){
-	return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version');
-}) || '0 r0').match(/\d+/g);
-
-Browser.Plugins.Flash = {
-	version: Number(version[0] || '0.' + version[1]) || 0,
-	build: Number(version[2]) || 0
-};
-
-//</1.4compat>
 
 // String scripts
 
@@ -153,10 +98,6 @@ Document.mirror(function(name, method){
 
 document.html = document.documentElement;
 if (!document.head) document.head = document.getElementsByTagName('head')[0];
-
-if (document.execCommand) try {
-	document.execCommand("BackgroundImageCache", false, true);
-} catch (e){}
 
 /*<ltIE9>*/
 if (this.attachEvent && !this.addEventListener){

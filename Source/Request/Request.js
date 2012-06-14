@@ -17,7 +17,7 @@ provides: Request
 (function(){
 
 var empty = function(){},
-	progressSupport = ('onprogress' in new Browser.Request);
+	progressSupport = ('onprogress' in new XMLHttpRequest);
 
 var Request = this.Request = new Class({
 
@@ -56,7 +56,7 @@ var Request = this.Request = new Class({
 	},
 
 	initialize: function(options){
-		this.xhr = new Browser.Request();
+		this.xhr = new XMLHttpRequest();
 		this.setOptions(options);
 		this.headers = this.options.headers;
 	},
@@ -224,7 +224,7 @@ var Request = this.Request = new Class({
 		clearTimeout(this.timer);
 		xhr.onreadystatechange = empty;
 		if (progressSupport) xhr.onprogress = xhr.onloadstart = empty;
-		this.xhr = new Browser.Request();
+		this.xhr = new XMLHttpRequest();
 		this.fireEvent('cancel');
 		return this;
 	}
