@@ -25,10 +25,6 @@ Number.implement({
 		return Math.round(this * precision) / precision;
 	},
 
-	times: function(fn, bind){
-		for (var i = 0; i < this; i++) fn.call(bind, i, this);
-	},
-
 	toFloat: function(){
 		return parseFloat(this);
 	},
@@ -38,15 +34,3 @@ Number.implement({
 	}
 
 });
-
-Number.alias('each', 'times');
-
-(function(math){
-	var methods = {};
-	math.each(function(name){
-		if (!Number[name]) methods[name] = function(){
-			return Math[name].apply(null, [this].concat(Array.from(arguments)));
-		};
-	});
-	Number.implement(methods);
-})(['abs', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'exp', 'floor', 'log', 'max', 'min', 'pow', 'sin', 'sqrt', 'tan']);

@@ -21,15 +21,6 @@ var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 Object.extend({
 
-	subset: function(object, keys){
-		var results = {};
-		for (var i = 0, l = keys.length; i < l; i++){
-			var k = keys[i];
-			if (k in object) results[k] = object[k];
-		}
-		return results;
-	},
-
 	map: function(object, fn, bind){
 		var results = {};
 		for (var key in object){
@@ -61,35 +52,12 @@ Object.extend({
 		return false;
 	},
 
-	keys: function(object){
-		var keys = [];
-		for (var key in object){
-			if (hasOwnProperty.call(object, key)) keys.push(key);
-		}
-		return keys;
-	},
-
 	values: function(object){
 		var values = [];
 		for (var key in object){
 			if (hasOwnProperty.call(object, key)) values.push(object[key]);
 		}
 		return values;
-	},
-
-	getLength: function(object){
-		return Object.keys(object).length;
-	},
-
-	keyOf: function(object, value){
-		for (var key in object){
-			if (hasOwnProperty.call(object, key) && object[key] === value) return key;
-		}
-		return null;
-	},
-
-	contains: function(object, value){
-		return Object.keyOf(object, value) != null;
 	},
 
 	toQueryString: function(object, base){

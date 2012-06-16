@@ -68,16 +68,6 @@ String.implement({
 		return parseFloat(this);
 	},
 
-	hexToRgb: function(array){
-		var hex = String(this).match(/^#?(\w{1,2})(\w{1,2})(\w{1,2})$/);
-		return (hex) ? hex.slice(1).hexToRgb(array) : null;
-	},
-
-	rgbToHex: function(array){
-		var rgb = String(this).match(/\d{1,3}/g);
-		return (rgb) ? rgb.rgbToHex(array) : null;
-	},
-
 	substitute: function(object, regexp){
 		return String(this).replace(regexp || (/\\?\{([^{}]+)\}/g), function(match, name){
 			if (match.charAt(0) == '\\') return match.slice(1);

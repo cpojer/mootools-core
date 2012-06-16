@@ -81,20 +81,6 @@ Array.implement({
 		return obj;
 	},
 
-	link: function(object){
-		var result = {};
-		for (var i = 0, l = this.length; i < l; i++){
-			for (var key in object){
-				if (object[key](this[i])){
-					result[key] = this[i];
-					delete object[key];
-					break;
-				}
-			}
-		}
-		return result;
-	},
-
 	contains: function(item, from){
 		return this.indexOf(item, from) != -1;
 	},
@@ -149,26 +135,6 @@ Array.implement({
 			if (this[i] != null) return this[i];
 		}
 		return null;
-	},
-
-	hexToRgb: function(array){
-		if (this.length != 3) return null;
-		var rgb = this.map(function(value){
-			if (value.length == 1) value += value;
-			return value.toInt(16);
-		});
-		return (array) ? rgb : 'rgb(' + rgb + ')';
-	},
-
-	rgbToHex: function(array){
-		if (this.length < 3) return null;
-		if (this.length == 4 && this[3] == 0 && !array) return 'transparent';
-		var hex = [];
-		for (var i = 0; i < 3; i++){
-			var bit = (this[i] - 0).toString(16);
-			hex.push((bit.length == 1) ? '0' + bit : bit);
-		}
-		return (array) ? hex : '#' + hex.join('');
 	}
 
 });
