@@ -16,6 +16,11 @@ provides: [Element.Delegation]
 
 (function(){
 
+var Element = exports.Element;
+var Slick = exports.Slick;
+var Window = window.Window;
+var Document = window.Document;
+
 var eventListenerSupport = !!window.addEventListener;
 
 Element.NativeEvents.focusin = Element.NativeEvents.focusout = 2;
