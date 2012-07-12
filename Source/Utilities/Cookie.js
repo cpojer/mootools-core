@@ -17,6 +17,9 @@ provides: Cookie
 ...
 */
 
+var Class = exports.Class;
+var Options = exports.Options;
+
 var Cookie = new Class({
 
 	Implements: Options,
