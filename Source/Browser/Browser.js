@@ -46,33 +46,6 @@ Browser[Browser.name] = true;
 Browser[Browser.name + parseInt(Browser.version, 10)] = true;
 Browser.Platform[Browser.Platform.name] = true;
 
-// String scripts
-
-Browser.exec = function(text){
-	if (!text) return text;
-	if (window.execScript){
-		window.execScript(text);
-	} else {
-		var script = document.createElement('script');
-		script.setAttribute('type', 'text/javascript');
-		script.text = text;
-		document.head.appendChild(script);
-		document.head.removeChild(script);
-	}
-	return text;
-};
-
-String.implement('stripScripts', function(exec){
-	var scripts = '';
-	var text = this.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, function(all, code){
-		scripts += code + '\n';
-		return '';
-	});
-	if (exec === true) Browser.exec(scripts);
-	else if (typeOf(exec) == 'function') exec(scripts, text);
-	return text;
-});
-
 // Window, Document
 
 Browser.extend({

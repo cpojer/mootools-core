@@ -51,15 +51,7 @@ var Element = exports.Element = window.Element = function(tag, props){
 };
 
 
-if (Browser.Element){
-	Element.prototype = Browser.Element.prototype;
-	// IE8 and IE9 require the wrapping.
-	Element.prototype._fireEvent = (function(fireEvent){
-		return function(type, event){
-			return fireEvent.call(this, type, event);
-		};
-	})(Element.prototype.fireEvent);
-}
+if (Browser.Element) Element.prototype = Browser.Element.prototype;
 
 new Type('Element', Element).mirror(function(name){
 	if (Array.prototype[name]) return;
@@ -159,17 +151,6 @@ new Type('Elements', Elements).implement({
 
 (function(){
 
-// FF, IE
-var splice = Array.prototype.splice, object = {'0': 0, '1': 1, length: 2};
-
-splice.call(object, 1, 1);
-if (object[1] == 1) Elements.implement('splice', function(){
-	var length = this.length;
-	var result = splice.apply(this, arguments);
-	while (length >= this.length) delete this[length--];
-	return result;
-}.protect());
-
 Array.forEachMethod(function(method, name){
 	Elements.implement(name, method);
 });
@@ -215,10 +196,6 @@ Slick.uidOf(document);
 
 Document.implement({
 
-	newTextNode: function(text){
-		return this.createTextNode(text);
-	},
-
 	getDocument: function(){
 		return this;
 	},
@@ -237,10 +214,6 @@ Document.implement({
 		return null;
 	}
 
-});
-
-if (window.$ == null) Window.implement('$', function(el, nc){
-	return document.id(el, nc, this.document);
 });
 
 Window.implement({
@@ -336,14 +309,6 @@ Element.implement({
 		return !expression || Slick.match(this, expression);
 	}
 
-});
-
-if (window.$$ == null) Window.implement('$$', function(selector){
-	if (arguments.length == 1){
-		if (typeof selector == 'string') return Slick.search(this.document, selector, new Elements);
-		else if (Type.isEnumerable(selector)) return new Elements(selector);
-	}
-	return new Elements(arguments);
 });
 
 // Inserters
@@ -600,10 +565,6 @@ Element.implement({
 		return this;
 	},
 
-	appendText: function(text, where){
-		return this.grab(this.getDocument().newTextNode(text), where);
-	},
-
 	grab: function(el, where){
 		inserters[where || 'bottom'](document.id(el, true), this);
 		return this;
@@ -630,24 +591,6 @@ Element.implement({
 		return new Elements(Array.from(this.options).filter(function(option){
 			return option.selected;
 		}));
-	},
-
-	toQueryString: function(){
-		var queryString = [];
-		this.getElements('input, select, textarea').each(function(el){
-			var type = el.type;
-			if (!el.name || el.disabled || type == 'submit' || type == 'reset' || type == 'file' || type == 'image') return;
-
-			var value = (el.get('tag') == 'select') ? el.getSelected().map(function(opt){
-				// IE
-				return document.id(opt).get('value');
-			}) : ((type == 'radio' || type == 'checkbox') && !el.checked) ? null : el.get('value');
-
-			Array.from(value).each(function(val){
-				if (typeof val != 'undefined') queryString.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(val));
-			});
-		});
-		return queryString.join('&');
 	}
 
 });

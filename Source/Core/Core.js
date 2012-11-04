@@ -122,15 +122,6 @@ Array.from = function(item){
 	return (Type.isEnumerable(item) && typeof item != 'string') ? (typeOf(item) == 'array') ? item : slice.call(item) : [item];
 };
 
-Number.from = function(item){
-	var number = parseFloat(item);
-	return isFinite(number) ? number : null;
-};
-
-String.from = function(item){
-	return item + '';
-};
-
 // hide, protect
 
 Function.implement({

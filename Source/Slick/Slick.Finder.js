@@ -57,20 +57,7 @@ local.setDocument = function(document){
 	features.root = root;
 	features.isXMLDocument = this.isXML(document);
 
-	features.brokenStarGEBTN
-	= features.starSelectsClosedQSA
-	= features.idGetsName
-	= features.brokenMixedCaseQSA
-	= features.brokenGEBCN
-	= features.brokenCheckedQSA
-	= features.brokenEmptyAttributeQSA
-	= features.isHTMLDocument
-	= features.nativeMatchesSelector
-	= false;
-
-	var starSelectsClosed, starSelectsComments,
-		brokenSecondClassNameGEBCN, cachedGetElementsByClassName,
-		brokenFormAttributeGetter;
+	features.brokenCheckedQSA = features.isHTMLDocument = features.nativeMatchesSelector = false;
 
 	var selected, id = 'slick_uniqueid';
 	var testNode = document.createElement('div');
@@ -82,83 +69,19 @@ local.setDocument = function(document){
 	try {
 		testNode.innerHTML = '<a id="'+id+'"></a>';
 		features.isHTMLDocument = !!document.getElementById(id);
-	} catch(e){};
+	} catch(e){}
 
 	if (features.isHTMLDocument){
 
 		testNode.style.display = 'none';
 
-		// IE returns comment nodes for getElementsByTagName('*') for some documents
-		testNode.appendChild(document.createComment(''));
-		starSelectsComments = (testNode.getElementsByTagName('*').length > 1);
-
-		// IE returns closed nodes (EG:"</foo>") for getElementsByTagName('*') for some documents
-		try {
-			testNode.innerHTML = 'foo</foo>';
-			selected = testNode.getElementsByTagName('*');
-			starSelectsClosed = (selected && !!selected.length && selected[0].nodeName.charAt(0) == '/');
-		} catch(e){};
-
-		features.brokenStarGEBTN = starSelectsComments || starSelectsClosed;
-
-		// IE returns elements with the name instead of just id for getElementsById for some documents
-		try {
-			testNode.innerHTML = '<a name="'+ id +'"></a><b id="'+ id +'"></b>';
-			features.idGetsName = document.getElementById(id) === testNode.firstChild;
-		} catch(e){};
-
-		if (testNode.getElementsByClassName){
-
-			// Safari 3.2 getElementsByClassName caches results
-			try {
-				testNode.innerHTML = '<a class="f"></a><a class="b"></a>';
-				testNode.getElementsByClassName('b').length;
-				testNode.firstChild.className = 'b';
-				cachedGetElementsByClassName = (testNode.getElementsByClassName('b').length != 2);
-			} catch(e){};
-
-			// Opera 9.6 getElementsByClassName doesnt detects the class if its not the first one
-			try {
-				testNode.innerHTML = '<a class="a"></a><a class="f b a"></a>';
-				brokenSecondClassNameGEBCN = (testNode.getElementsByClassName('a').length != 2);
-			} catch(e){};
-
-			features.brokenGEBCN = cachedGetElementsByClassName || brokenSecondClassNameGEBCN;
-		}
-
 		if (testNode.querySelectorAll){
-			// IE 8 returns closed nodes (EG:"</foo>") for querySelectorAll('*') for some documents
-			try {
-				testNode.innerHTML = 'foo</foo>';
-				selected = testNode.querySelectorAll('*');
-				features.starSelectsClosedQSA = (selected && !!selected.length && selected[0].nodeName.charAt(0) == '/');
-			} catch(e){};
-
-			// Safari 3.2 querySelectorAll doesnt work with mixedcase on quirksmode
-			try {
-				testNode.innerHTML = '<a class="MiX"></a>';
-				features.brokenMixedCaseQSA = !testNode.querySelectorAll('.MiX').length;
-			} catch(e){};
-
 			// Webkit and Opera dont return selected options on querySelectorAll
 			try {
 				testNode.innerHTML = '<select><option selected="selected">a</option></select>';
 				features.brokenCheckedQSA = (testNode.querySelectorAll(':checked').length == 0);
-			} catch(e){};
-
-			// IE returns incorrect results for attr[*^$]="" selectors on querySelectorAll
-			try {
-				testNode.innerHTML = '<a class=""></a>';
-				features.brokenEmptyAttributeQSA = (testNode.querySelectorAll('[class*=""]').length != 0);
-			} catch(e){};
-
+			} catch(e){}
 		}
-
-		// IE6-7, if a form has an input of id x, form.getAttribute(x) returns a reference to the input
-		try {
-			testNode.innerHTML = '<form action="s"><input id="action"/></form>';
-			brokenFormAttributeGetter = (testNode.firstChild.getAttribute('action') != 's');
-		} catch(e){};
 
 		// native matchesSelector function
 
@@ -167,7 +90,7 @@ local.setDocument = function(document){
 			// if matchesSelector trows errors on incorrect sintaxes we can use it
 			features.nativeMatchesSelector.call(root, ':slick');
 			features.nativeMatchesSelector = null;
-		} catch(e){};
+		} catch(e){}
 
 	}
 
@@ -184,12 +107,7 @@ local.setDocument = function(document){
 
 	// getAttribute
 
-	features.getAttribute = (features.isHTMLDocument && brokenFormAttributeGetter) ? function(node, name){
-		var method = this.attributeGetters[name];
-		if (method) return method.call(node);
-		var attributeNode = node.getAttributeNode(name);
-		return (attributeNode) ? attributeNode.nodeValue : null;
-	} : function(node, name){
+	features.getAttribute = function(node, name){
 		var method = this.attributeGetters[name];
 		return (method) ? method.call(node) : node.getAttribute(name);
 	};
@@ -251,7 +169,6 @@ local.setDocument = function(document){
 // Main Method
 
 var reSimpleSelector = /^([#.]?)((?:[\w-]+|\*))$/,
-	reEmptyAttribute = /\[.+[*$^]=(?:""|'')?\]/,
 	qsaFailExpCache = {};
 
 local.search = function(context, expression, append, first){
@@ -288,7 +205,6 @@ local.search = function(context, expression, append, first){
 
 			if (!symbol){
 
-				if (name == '*' && this.brokenStarGEBTN) break simpleSelectors;
 				nodes = context.getElementsByTagName(name);
 				if (first) return nodes[0] || null;
 				for (i = 0; node = nodes[i++];){
@@ -300,14 +216,13 @@ local.search = function(context, expression, append, first){
 				if (!this.isHTMLDocument || !contextIsDocument) break simpleSelectors;
 				node = context.getElementById(name);
 				if (!node) return found;
-				if (this.idGetsName && node.getAttributeNode('id').nodeValue != name) break simpleSelectors;
 				if (first) return node || null;
 				if (!(hasOthers && uniques[this.getUID(node)])) found.push(node);
 
 			} else if (symbol == '.'){
 
-				if (!this.isHTMLDocument || ((!context.getElementsByClassName || this.brokenGEBCN) && context.querySelectorAll)) break simpleSelectors;
-				if (context.getElementsByClassName && !this.brokenGEBCN){
+				if (!this.isHTMLDocument || (!context.getElementsByClassName && context.querySelectorAll)) break simpleSelectors;
+				if (context.getElementsByClassName){
 					nodes = context.getElementsByClassName(name);
 					if (first) return nodes[0] || null;
 					for (i = 0; node = nodes[i++];){
@@ -317,7 +232,7 @@ local.search = function(context, expression, append, first){
 					var matchClass = new RegExp('(^|\\s)'+ Slick.escapeRegExp(name) +'(\\s|$)');
 					nodes = context.getElementsByTagName('*');
 					for (i = 0; node = nodes[i++];){
-						className = node.className;
+						var className = node.className;
 						if (!(className && matchClass.test(className))) continue;
 						if (first) return node;
 						if (!(hasOthers && uniques[this.getUID(node)])) found.push(node);
@@ -338,9 +253,7 @@ local.search = function(context, expression, append, first){
 			if (!this.isHTMLDocument
 				|| qsaFailExpCache[expression]
 				//TODO: only skip when expression is actually mixed case
-				|| this.brokenMixedCaseQSA
 				|| (this.brokenCheckedQSA && expression.indexOf(':checked') > -1)
-				|| (this.brokenEmptyAttributeQSA && reEmptyAttribute.test(expression))
 				|| (!contextIsDocument //Abort when !contextIsDocument and...
 					//  there are multiple expressions in the selector
 					//  since we currently only fix non-document rooted QSA for single expression selectors
@@ -349,11 +262,12 @@ local.search = function(context, expression, append, first){
 				|| Slick.disableQSA
 			) break querySelector;
 
-			var _expression = expression, _context = context;
+			var _expression = expression, _context = context, currentId, slickid;
 			if (!contextIsDocument){
 				// non-document rooted QSA
 				// credits to Andrew Dupont
-				var currentId = _context.getAttribute('id'), slickid = 'slickid__';
+				currentId = _context.getAttribute('id');
+				slickid = 'slickid__';
 				_context.setAttribute('id', slickid);
 				_expression = '#' + slickid + ' ' + _expression;
 				context = _context.parentNode;
@@ -373,9 +287,7 @@ local.search = function(context, expression, append, first){
 				}
 			}
 
-			if (this.starSelectsClosedQSA) for (i = 0; node = nodes[i++];){
-				if (node.nodeName > '@' && !(hasOthers && uniques[this.getUID(node)])) found.push(node);
-			} else for (i = 0; node = nodes[i++];){
+			for (i = 0; node = nodes[i++];){
 				if (!(hasOthers && uniques[this.getUID(node)])) found.push(node);
 			}
 
@@ -568,7 +480,7 @@ local.matchNode = function(node, selector){
 	if (!parsed) return true;
 
 	// simple (single) selectors
-	var expressions = parsed.expressions, simpleExpCounter = 0, i;
+	var expressions = parsed.expressions, simpleExpCounter = 0, i, currentExpression;
 	for (i = 0; (currentExpression = expressions[i]); i++){
 		if (currentExpression.length == 1){
 			var exp = currentExpression[0];
@@ -630,7 +542,7 @@ var combinators = {
 		if (this.isHTMLDocument){
 			getById: if (id){
 				item = this.document.getElementById(id);
-				if ((!item && node.all) || (this.idGetsName && item && item.getAttributeNode('id').nodeValue != id)){
+				if (!item && node.all){
 					// all[id] returns all the elements with that name or id inside node
 					// if theres just one it will return the element, else it will be a collection
 					children = node.all[id];
@@ -653,7 +565,7 @@ var combinators = {
 				this.push(item, tag, null, classes, attributes, pseudos);
 				return;
 			}
-			getByClass: if (classes && node.getElementsByClassName && !this.brokenGEBCN){
+			getByClass: if (classes && node.getElementsByClassName){
 				children = node.getElementsByClassName(classList.join(' '));
 				if (!(children && children.length)) break getByClass;
 				for (i = 0; item = children[i++];) this.push(item, tag, id, null, attributes, pseudos);
@@ -663,7 +575,7 @@ var combinators = {
 		getByTag: {
 			children = node.getElementsByTagName(tag);
 			if (!(children && children.length)) break getByTag;
-			if (!this.brokenStarGEBTN) tag = null;
+			tag = null;
 			for (i = 0; item = children[i++];) this.push(item, tag, id, classes, attributes, pseudos);
 		}
 	},
