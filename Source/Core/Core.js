@@ -22,7 +22,7 @@ provides: [Core, MooTools, Type, typeOf, instanceOf]
 
 (function(){
 
-this.MooTools = {
+exports.MooTools = {
 	version: '1.5.0-custom',
 	build: '%build%'
 };
@@ -44,7 +44,7 @@ var typeOf = exports.typeOf = function(item){
 	return typeof item;
 };
 
-var instanceOf = exports.instanceOf = function(item, object){
+exports.instanceOf = function(item, object){
 	if (item == null) return false;
 	var constructor = item.$constructor || item.constructor;
 	while (constructor){
@@ -291,10 +291,10 @@ Number.extend('random', function(min, max){
 
 // forEach, each
 
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+var has = Object.prototype.hasOwnProperty;
 Object.extend('forEach', function(object, fn, bind){
 	for (var key in object){
-		if (hasOwnProperty.call(object, key)) fn.call(bind, object[key], key, object);
+		if (has.call(object, key)) fn.call(bind, object[key], key, object);
 	}
 });
 
